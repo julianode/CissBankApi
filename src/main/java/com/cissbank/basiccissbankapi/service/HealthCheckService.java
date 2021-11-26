@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -23,7 +21,6 @@ public class HealthCheckService {
     public HealthCheck healthCheck() {
 
         Timestamp startTime = new Timestamp(this.startTime);
-        long millisecondsTimeDifference = System.currentTimeMillis() - this.startTime;
         log.info("System healthCheck requested. [count: {}]", counter.incrementAndGet());
 
         return new HealthCheck(counter.get(), String.format(template, startTime));
