@@ -2,12 +2,12 @@ package com.cissbank.basiccissbankapi.vo;
 
 import java.util.Objects;
 
-public class Greeting {
+public class HealthCheck {
 
     private final long id;
     private final String content;
 
-    public Greeting(long id, String content) {
+    public HealthCheck(long id, String content) {
         this.id = id;
         this.content = content;
     }
@@ -23,9 +23,9 @@ public class Greeting {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Greeting)) return false;
-        Greeting greeting = (Greeting) o;
-        return id == greeting.id && Objects.equals(content, greeting.content);
+        if (!(o instanceof HealthCheck)) return false;
+        HealthCheck that = (HealthCheck) o;
+        return id == that.id && Objects.equals(content, that.content);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Greeting {
 
     @Override
     public String toString() {
-        return "Greeting{" +
+        return "HealthCheck{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
                 '}';
