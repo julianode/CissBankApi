@@ -26,6 +26,6 @@ public class HealthCheckService {
         LocalTime runningTime = LocalTime.now().minusSeconds(startTimeInSeconds);
         log.info("System healthCheck requested. [count: {}]", counter.incrementAndGet());
 
-        return new HealthCheck(counter.incrementAndGet(), String.format(template, startTime, runningTime));
+        return new HealthCheck(counter.get(), String.format(template, startTime, runningTime));
     }
 }
