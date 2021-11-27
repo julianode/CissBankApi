@@ -1,10 +1,15 @@
 package com.cissbank.basiccissbankapi.entity;
 
-import com.cissbank.basiccissbankapi.common.IdentificationDocumentType;
+import com.cissbank.basiccissbankapi.common.enumeration.IdentificationDocumentType;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
+/**
+ * Mandatory information.
+ *  (pt-BR) BANCO CENTRAL DO BRASIL, Resolução n°2.025, or
+ *  (en) Central Bank of Brazil, Resolution nº2,025.
+ */
 public class IdentificationDocument {
 
     private int id;
@@ -24,6 +29,14 @@ public class IdentificationDocument {
         this.expeditionAgency = expeditionAgency;
         this.expeditionDate = expeditionDate;
         this.ownerNationalRegistration = ownerNationalRegistration;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNumber() {

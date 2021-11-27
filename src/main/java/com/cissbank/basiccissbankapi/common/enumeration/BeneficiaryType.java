@@ -1,4 +1,6 @@
-package com.cissbank.basiccissbankapi.common;
+package com.cissbank.basiccissbankapi.common.enumeration;
+
+import com.cissbank.basiccissbankapi.common.util.CissUtils;
 
 import java.security.InvalidParameterException;
 
@@ -13,7 +15,7 @@ public enum BeneficiaryType {
         this.value = value;
     }
 
-    public static BeneficiaryType fromString(String dirtyBeneficiaryType) {
+    public static BeneficiaryType fromString(String dirtyBeneficiaryType) throws InvalidParameterException {
 
         BeneficiaryType beneficiaryType;
 
@@ -43,7 +45,7 @@ public enum BeneficiaryType {
         return beneficiaryType;
     }
 
-    public static BeneficiaryType fromNationalRegistration(String nationalRegistration) {
+    public static BeneficiaryType fromNationalRegistration(String nationalRegistration) throws InvalidParameterException {
 
         nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
         BeneficiaryType beneficiaryType;

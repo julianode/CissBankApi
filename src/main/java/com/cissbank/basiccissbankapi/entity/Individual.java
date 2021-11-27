@@ -1,17 +1,18 @@
 package com.cissbank.basiccissbankapi.entity;
 
-import com.cissbank.basiccissbankapi.common.BeneficiaryType;
-import com.cissbank.basiccissbankapi.common.Gender;
-import com.cissbank.basiccissbankapi.common.ActivationStatus;
+import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
+import com.cissbank.basiccissbankapi.common.enumeration.Gender;
+import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
+ * Represents an Individual, a physical person.
  * Fields according to:
- * (pt-BR) BANCO CENTRAL DO BRASIL, Resolução n°2.025
- * (en) Central Bank of Brazil, Resolution nº2,025
- * Physical person only.
+ * (pt-BR) BANCO CENTRAL DO BRASIL, Resolução n°2.025, or
+ * (en) Central Bank of Brazil, Resolution nº2,025.
+ * Not to be confused with a legal person.
  */
 public class Individual {
 

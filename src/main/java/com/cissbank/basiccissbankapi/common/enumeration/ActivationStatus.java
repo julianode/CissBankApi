@@ -1,4 +1,4 @@
-package com.cissbank.basiccissbankapi.common;
+package com.cissbank.basiccissbankapi.common.enumeration;
 
 public enum ActivationStatus {
 

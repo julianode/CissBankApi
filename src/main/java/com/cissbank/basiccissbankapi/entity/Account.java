@@ -1,15 +1,19 @@
 package com.cissbank.basiccissbankapi.entity;
 
-import com.cissbank.basiccissbankapi.common.ActivationStatus;
-import com.cissbank.basiccissbankapi.common.BeneficiaryType;
-import com.cissbank.basiccissbankapi.common.CissUtils;
+import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
+import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
+import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.vo.BankDetails;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
-// add UNIQUE CONSTRAINT ownerNationalRegistration-number
+
+/**
+ * Bank Account Representation for this institution (CiSS Bank).
+ */
 public class Account {
+    // add UNIQUE CONSTRAINT ownerNationalRegistration-number
 
     private int id;
     private int number;
@@ -98,12 +102,16 @@ public class Account {
         if (this == o) return true;
         if (!(o instanceof Account)) return false;
         Account account = (Account) o;
-        return id == account.id && number == account.number && shouldHaveInitialDeposit == account.shouldHaveInitialDeposit && demonstrationAccount == account.demonstrationAccount && Objects.equals(ownerNationalRegistration, account.ownerNationalRegistration) && status == account.status && Objects.equals(initialDepositDate, account.initialDepositDate);
+        return id == account.id && number == account.number && shouldHaveInitialDeposit == account.shouldHaveInitialDeposit
+                && demonstrationAccount == account.demonstrationAccount
+                && Objects.equals(ownerNationalRegistration, account.ownerNationalRegistration)
+                && status == account.status && Objects.equals(initialDepositDate, account.initialDepositDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, ownerNationalRegistration, status, shouldHaveInitialDeposit, initialDepositDate, demonstrationAccount);
+        return Objects.hash(id, number, ownerNationalRegistration, status, shouldHaveInitialDeposit,
+                initialDepositDate, demonstrationAccount);
     }
 
     @Override

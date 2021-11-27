@@ -1,7 +1,7 @@
 package com.cissbank.basiccissbankapi.vo;
 
-import com.cissbank.basiccissbankapi.common.BeneficiaryType;
-import com.cissbank.basiccissbankapi.common.CissUtils;
+import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
+import com.cissbank.basiccissbankapi.common.util.CissUtils;
 
 import java.util.Objects;
 

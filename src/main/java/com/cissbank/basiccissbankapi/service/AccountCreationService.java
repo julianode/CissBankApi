@@ -41,7 +41,7 @@ public class AccountCreationService {
     }
 
     @DeleteMapping("/account")
-    public void deleteAccount(@RequestParam(value="accountNumber") String accountNumber) {
+    public void deleteAccount(@RequestParam(value="accountNumber") int accountNumber) {
         // TODO: just set account status DEPRECATED
         // if none other account is linked to this individual, then set individual as INACTIVE too
     }
