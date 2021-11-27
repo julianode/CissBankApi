@@ -3,6 +3,7 @@ package com.cissbank.basiccissbankapi.entity.client;
 import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
 import com.cissbank.basiccissbankapi.common.enumeration.Gender;
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
+import com.cissbank.basiccissbankapi.common.util.CissUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,7 +44,8 @@ public class Individual {
 
     public Individual(String name, String nationalRegistration) {
         this.name = name;
-        this.nationalRegistration = nationalRegistration;
+        this.nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
+        this.beneficiaryType = BeneficiaryType.fromNationalRegistration(nationalRegistration);
         this.status = ActivationStatus.INACTIVE;
     }
 

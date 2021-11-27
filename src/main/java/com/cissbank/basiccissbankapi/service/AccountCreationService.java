@@ -1,7 +1,12 @@
 package com.cissbank.basiccissbankapi.service;
 
+import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
+import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.entity.client.Account;
 import com.cissbank.basiccissbankapi.entity.client.Individual;
+import com.cissbank.basiccissbankapi.repository.AccountRepository;
+import com.cissbank.basiccissbankapi.repository.IndividualRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -11,19 +16,39 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AccountCreationService {
 
+    @Autowired
+    IndividualRepository individualRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
     @PostMapping("/account")
     public Account createAccount(@RequestParam(value="name") String name,
                                  @RequestParam(value="nationalRegistration") String nationalRegistration,
                                  @RequestParam(value="shouldHaveInitialDeposit") boolean shouldHaveInitialDeposit) {
 
-        Individual newClient = new Individual(name, nationalRegistration);
-        // if individual exists, make it ACTIVE
-        // TODO: save Individual
+        Individual newUser = new Individual(name, nationalRegistration);
+        String cleanNationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
+        Individual existingUser = individualRepository.findByNationalRegistration(cleanNationalRegistration);
+
+        handleUserSituation(newUser, existingUser);
 
         Account newAccount = new Account(nationalRegistration, shouldHaveInitialDeposit);
-        // TODO: save Account
+        accountRepository.save(newAccount);
 
         return newAccount;
+    }
+
+    private void handleUserSituation(Individual newUser, Individual existingUser) {
+
+        if (existingUser != null) {
+            if (existingUser.getStatus() != ActivationStatus.ACTIVE) {
+                existingUser.setStatus(ActivationStatus.ACTIVE);
+                individualRepository.save(existingUser);
+            }
+        } else {
+            individualRepository.save(newUser);
+        }
     }
 
     @PostMapping("/account/approve")

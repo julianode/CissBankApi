@@ -5,6 +5,8 @@ import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
 import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.vo.BankDetails;
 
+import javax.annotation.Generated;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -12,9 +14,12 @@ import java.util.Objects;
 /**
  * Bank Account Representation for this institution (CiSS Bank).
  */
+@Entity
 public class Account {
     // add UNIQUE CONSTRAINT ownerNationalRegistration-number
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int number;
     private String ownerNationalRegistration;

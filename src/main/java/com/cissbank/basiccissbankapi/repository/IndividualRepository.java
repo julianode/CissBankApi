@@ -5,5 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IndividualRepository extends CrudRepository<Individual, Integer> {
 
+    /**
+     * Use CissUtils.ensureNationalRegistrationFormat() before inputting the nationalRegistration param.
+     */
     Individual findByNationalRegistration(String nationalRegistration);
 }
