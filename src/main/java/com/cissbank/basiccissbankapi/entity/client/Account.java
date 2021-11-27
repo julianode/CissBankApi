@@ -1,4 +1,4 @@
-package com.cissbank.basiccissbankapi.entity;
+package com.cissbank.basiccissbankapi.entity.client;
 
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;

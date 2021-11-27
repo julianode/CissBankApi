@@ -1,21 +1,20 @@
 package com.cissbank.basiccissbankapi.vo;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 public class AccountBalance {
 
     private int accountNumber;
     private BigDecimal amount;
-    private Timestamp requestedAt;
+    private long requestedAtMillisUtc;
 
     public AccountBalance() {}
 
-    public AccountBalance(int accountNumber, BigDecimal amount, Timestamp requestedAt) {
+    public AccountBalance(int accountNumber, BigDecimal amount, long requestedAtMillisUtc) {
         this.accountNumber = accountNumber;
         this.amount = amount;
-        this.requestedAt = requestedAt;
+        this.requestedAtMillisUtc = requestedAtMillisUtc;
     }
 
     public int getAccountNumber() {
@@ -34,12 +33,12 @@ public class AccountBalance {
         this.amount = amount;
     }
 
-    public Timestamp getRequestedAt() {
-        return requestedAt;
+    public long getRequestedAtMillisUtc() {
+        return requestedAtMillisUtc;
     }
 
-    public void setRequestedAt(Timestamp requestedAt) {
-        this.requestedAt = requestedAt;
+    public void setRequestedAtMillisUtc(long requestedAtMillisUtc) {
+        this.requestedAtMillisUtc = requestedAtMillisUtc;
     }
 
     @Override
@@ -47,13 +46,12 @@ public class AccountBalance {
         if (this == o) return true;
         if (!(o instanceof AccountBalance)) return false;
         AccountBalance that = (AccountBalance) o;
-        return accountNumber == that.accountNumber && Objects.equals(amount, that.amount)
-                && Objects.equals(requestedAt, that.requestedAt);
+        return accountNumber == that.accountNumber && requestedAtMillisUtc == that.requestedAtMillisUtc && Objects.equals(amount, that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber, amount, requestedAt);
+        return Objects.hash(accountNumber, amount, requestedAtMillisUtc);
     }
 
     @Override
@@ -61,7 +59,7 @@ public class AccountBalance {
         return "AccountBalance{" +
                 "accountNumber=" + accountNumber +
                 ", amount=" + amount +
-                ", requestedAt=" + requestedAt +
+                ", requestedAtMillisUtc=" + requestedAtMillisUtc +
                 '}';
     }
 }

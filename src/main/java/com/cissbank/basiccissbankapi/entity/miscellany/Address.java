@@ -1,4 +1,4 @@
-package com.cissbank.basiccissbankapi.entity;
+package com.cissbank.basiccissbankapi.entity.miscellany;
 
 import java.util.Objects;
 

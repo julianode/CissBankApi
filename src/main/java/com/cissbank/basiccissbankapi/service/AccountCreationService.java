@@ -1,7 +1,7 @@
 package com.cissbank.basiccissbankapi.service;
 
-import com.cissbank.basiccissbankapi.entity.Account;
-import com.cissbank.basiccissbankapi.entity.Individual;
+import com.cissbank.basiccissbankapi.entity.client.Account;
+import com.cissbank.basiccissbankapi.entity.client.Individual;
 import org.springframework.web.bind.annotation.*;
 
 /**
