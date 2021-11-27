@@ -14,6 +14,8 @@ public class Address {
     private String country;
     private String zipCode;
 
+    public Address() {}
+
     public Address(String streetName, String streetNumber, String complement, String neighbourhood, String city,
                    String state, String country, String zipCode) {
         this.streetName = streetName;

@@ -7,11 +7,15 @@ import java.util.Objects;
 
 public class IdentificationDocument {
 
-    private final String number; // number is the id too
-    private final IdentificationDocumentType identificationDocType;
-    private final String expeditionAgency;
-    private final Timestamp expeditionDate;
-    private final String ownerNationalRegistration;
+    private int id;
+    private String number;
+    private IdentificationDocumentType identificationDocType;
+    private String expeditionAgency;
+    private Timestamp expeditionDate;
+    private String ownerNationalRegistration;
+    // private PhotoId identificationPhotoDocument; TODO: implement person photo id image
+
+    public IdentificationDocument() {}
 
     public IdentificationDocument(String number, IdentificationDocumentType identificationDocType, String expeditionAgency,
                                   Timestamp expeditionDate, String ownerNationalRegistration) {
@@ -26,20 +30,40 @@ public class IdentificationDocument {
         return number;
     }
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
     public IdentificationDocumentType getIdentificationDocType() {
         return identificationDocType;
+    }
+
+    public void setIdentificationDocType(IdentificationDocumentType identificationDocType) {
+        this.identificationDocType = identificationDocType;
     }
 
     public String getExpeditionAgency() {
         return expeditionAgency;
     }
 
+    public void setExpeditionAgency(String expeditionAgency) {
+        this.expeditionAgency = expeditionAgency;
+    }
+
     public Timestamp getExpeditionDate() {
         return expeditionDate;
     }
 
+    public void setExpeditionDate(Timestamp expeditionDate) {
+        this.expeditionDate = expeditionDate;
+    }
+
     public String getOwnerNationalRegistration() {
         return ownerNationalRegistration;
+    }
+
+    public void setOwnerNationalRegistration(String ownerNationalRegistration) {
+        this.ownerNationalRegistration = ownerNationalRegistration;
     }
 
     @Override
@@ -60,7 +84,8 @@ public class IdentificationDocument {
     @Override
     public String toString() {
         return "IdentificationDocument{" +
-                "number='" + number + '\'' +
+                "id=" + id +
+                ", number='" + number + '\'' +
                 ", identificationDocType=" + identificationDocType +
                 ", expeditionAgency='" + expeditionAgency + '\'' +
                 ", expeditionDate=" + expeditionDate +

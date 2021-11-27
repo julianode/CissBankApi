@@ -29,8 +29,9 @@ public class Individual {
     private int deliveryAddressId;
     private int billingAddressId;
     private String identificationDocNumber;
-    private ActivationStatus status;
-    // private PhotoId identificationPhotoDocument; TODO: implement person photo id image
+    private ActivationStatus status; // Individuals may not be DEPRECATED, unless dead.
+
+    public Individual() {}
 
     public Individual(String name, String nationalRegistration) {
         this.name = name;
