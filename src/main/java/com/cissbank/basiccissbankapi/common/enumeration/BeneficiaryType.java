@@ -15,7 +15,10 @@ public enum BeneficiaryType {
         this.value = value;
     }
 
-    public static BeneficiaryType fromString(String dirtyBeneficiaryType) throws InvalidParameterException {
+    /**
+     * @throws InvalidParameterException in case the beneficiary type does not match any expected case.
+     */
+    public static BeneficiaryType fromString(String dirtyBeneficiaryType) {
 
         BeneficiaryType beneficiaryType;
 
@@ -45,7 +48,10 @@ public enum BeneficiaryType {
         return beneficiaryType;
     }
 
-    public static BeneficiaryType fromNationalRegistration(String nationalRegistration) throws InvalidParameterException {
+    /**
+     * @throws InvalidParameterException in case the national registration has not either 11 neither 14 characters length.
+     */
+    public static BeneficiaryType fromNationalRegistration(String nationalRegistration) {
 
         nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
         BeneficiaryType beneficiaryType;

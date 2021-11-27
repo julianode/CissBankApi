@@ -4,6 +4,10 @@ import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
 import com.cissbank.basiccissbankapi.common.enumeration.Gender;
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -14,8 +18,11 @@ import java.util.Objects;
  * (en) Central Bank of Brazil, Resolution nº2,025.
  * Not to be confused with a legal person.
  */
+@Entity
 public class Individual {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
     private Timestamp dateOfBirth;

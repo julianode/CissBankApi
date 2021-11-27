@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 public class Deposit extends LedgerTransaction {
 
-    public Deposit(BigDecimal amount, int fromAccountId, int toAccountId) {
-        super(amount, fromAccountId, toAccountId);
+    public Deposit(BigDecimal amount, int toAccountId) {
+        super(amount, 0, toAccountId);
         this.transferType = TransferType.DEPOSIT;
     }
 }
