@@ -17,7 +17,7 @@ public class BankDetails {
         this.ispb = ispb;
         this.nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
         this.beneficiaryType = BeneficiaryType.fromString(beneficiaryType).value;
-        this.branchNumber = branchNumber;
+        this.branchNumber = CissUtils.ensureAccountNumberSize(branchNumber);
         this.accountNumber = CissUtils.ensureBranchNumberSize(accountNumber);
     }
 

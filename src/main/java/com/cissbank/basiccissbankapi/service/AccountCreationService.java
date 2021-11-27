@@ -7,7 +7,10 @@ import com.cissbank.basiccissbankapi.entity.client.Individual;
 import com.cissbank.basiccissbankapi.repository.AccountRepository;
 import com.cissbank.basiccissbankapi.repository.IndividualRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * There is no "update account" service, for now.
@@ -52,22 +55,82 @@ public class AccountCreationService {
     }
 
     @PostMapping("/account/approve")
-    public void approveAccount() {
-        // ask for the optional deposit date, if needed
-        // turn status active.
-        // ask for a "demonstrationAccount" flag in order to be approved with only simple information.
-        // otherwise, do not approve unless all the required data is given.
+    public ResponseEntity<String> approveAccount(@RequestParam(value="accountNumber") int accountNumber,
+                                                 @RequestParam(value="demonstrationAccount") boolean demonstrationAccount) {
+
+        Account account = accountRepository.findByNumber(accountNumber);
+        boolean depositHappened = false;
+        boolean shouldHaveInitialDeposit = account.shouldHaveInitialDeposit();
+
+        if (account.getStatus() == ActivationStatus.ACTIVE) {
+            String message = String.format("Account already approved/active. [accountNumber: %d]", accountNumber);
+            return ResponseEntity.ok(message);
+        }
+        if (shouldHaveInitialDeposit) {
+            depositHappened = account.getInitialDepositDate() != null;
+        }
+        return executeAccountApprovalDecisionMaking(account, shouldHaveInitialDeposit, demonstrationAccount,
+                accountNumber, depositHappened);
+    }
+
+    /**
+     * @throws IllegalStateException in the case the individual is lacking regulatory information or has not met deposit condition.
+     */
+    private ResponseEntity<String> executeAccountApprovalDecisionMaking(Account account, boolean shouldHaveInitialDeposit,
+                                                                        boolean demonstrationAccount, int accountNumber,
+                                                                        boolean depositHappened) {
+        if (!shouldHaveInitialDeposit && demonstrationAccount) {
+            account.setStatus(ActivationStatus.ACTIVE);
+            accountRepository.save(account);
+            String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
+            return ResponseEntity.ok(message);
+
+        } else if (shouldHaveInitialDeposit && !depositHappened) {
+            String message = String.format("Deposit condition not met. [accountNumber: %d]", accountNumber);
+            throw new IllegalStateException(message);
+
+        } else if (shouldHaveInitialDeposit && depositHappened && demonstrationAccount) {
+            account.setStatus(ActivationStatus.ACTIVE);
+            accountRepository.save(account);
+            String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
+            return ResponseEntity.ok(message);
+
+        } else if (!shouldHaveInitialDeposit && !demonstrationAccount) {
+            String ownerNationalRegistration = account.getOwnerNationalRegistration();
+            Individual individual = individualRepository.findByNationalRegistration(ownerNationalRegistration);
+
+            if (individual.isLackingRegulatoryInformation()) {
+                String descriptionMessage = String.format("The individual is lacking regulatory information." +
+                        " [nationalRegistration: %s]", ownerNationalRegistration);
+                throw new IllegalStateException(descriptionMessage);
+
+            } else {
+                account.setStatus(ActivationStatus.ACTIVE);
+                accountRepository.save(account);
+                String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
+                return ResponseEntity.ok(message);
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @GetMapping("/account")
+    public Account getAccount(@RequestParam(value="accountNumber") int accountNumber) {
+        return accountRepository.findByNumber(accountNumber);
     }
 
     @GetMapping("/account")
-    public Account getAccount(@RequestParam(value="nationalRegistration") String nationalRegistration) {
-        return null; // TODO: develop how to get an account from database
-        // talk about status and what is lacking and that what is lacking are a future feature.
+    public List<Account> getAccounts(@RequestParam(value="nationalRegistration") String nationalRegistration) {
+        return accountRepository.findByOwnerNationalRegistration(nationalRegistration);
     }
 
     @DeleteMapping("/account")
     public void deleteAccount(@RequestParam(value="accountNumber") int accountNumber) {
-        // TODO: just set account status DEPRECATED
-        // if none other account is linked to this individual, then set individual as INACTIVE too
+
+        Account account = accountRepository.findByNumber(accountNumber);
+        account.setStatus(ActivationStatus.DEPRECATED);
+        accountRepository.save(account);
     }
 }

@@ -22,7 +22,19 @@ public class CissUtils {
         while (branchNumberBuilder.length() < 4) {
             branchNumberBuilder.insert(0, "0");
         }
-
         return branchNumberBuilder.toString();
+    }
+
+    /**
+     * Branch numbers must be 8 digits long at least.
+     * Ex.: 00000001, 00000123, 10000000, 12345678, 123456789, 999999999.
+     */
+    public static String ensureAccountNumberSize(String accountNumber) {
+
+        StringBuilder accountNumberBuilder = new StringBuilder(accountNumber);
+        while (accountNumberBuilder.length() < 8) {
+            accountNumberBuilder.insert(0, "0");
+        }
+        return accountNumberBuilder.toString();
     }
 }

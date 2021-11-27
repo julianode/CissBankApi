@@ -169,6 +169,18 @@ public class Individual {
         this.status = status;
     }
 
+    public boolean isLackingRegulatoryInformation() {
+        return dateOfBirth == null
+                || motherName == null
+                || countyOfBirth == null
+                || spouseName == null
+                || gender == null
+                || profession == null
+                || deliveryAddressId == 0
+                || billingAddressId == 0
+                || identificationDocNumber == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

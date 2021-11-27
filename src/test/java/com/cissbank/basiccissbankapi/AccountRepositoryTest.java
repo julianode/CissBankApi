@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -25,8 +27,8 @@ public class AccountRepositoryTest {
 
         Account account = new Account(fredNationalRegistration, false);
         accountRepository.save(account);
-        Account expectedAccount = accountRepository.findByOwnerNationalRegistration(fredNationalRegistration);
-        assertEquals(expectedAccount, account);
+        List<Account> expectedAccountList = accountRepository.findByOwnerNationalRegistration(fredNationalRegistration);
+        assertEquals(expectedAccountList.get(0), account);
     }
 
     // TODO: test number generation
