@@ -42,4 +42,25 @@ public enum BeneficiaryType {
         }
         return beneficiaryType;
     }
+
+    public static BeneficiaryType fromNationalRegistration(String nationalRegistration) {
+
+        nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
+        BeneficiaryType beneficiaryType;
+
+        switch (nationalRegistration.length()) {
+
+            case 11: // CPF length
+                beneficiaryType = PHYSICAL_PERSON;
+                break;
+
+            case 14: // CNPJ length
+                beneficiaryType = LEGAL_PERSON;
+                break;
+
+            default:
+                throw new InvalidParameterException("Cannot infer a BeneficiaryType from " + nationalRegistration);
+        }
+        return beneficiaryType;
+    }
 }

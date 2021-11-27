@@ -1,7 +1,7 @@
 package com.cissbank.basiccissbankapi.vo;
 
 import com.cissbank.basiccissbankapi.common.BeneficiaryType;
-import com.cissbank.basiccissbankapi.entity.Individual;
+import com.cissbank.basiccissbankapi.common.CissUtils;
 
 import java.util.Objects;
 
@@ -15,18 +15,10 @@ public class BankDetails {
 
     public BankDetails(int ispb, String nationalRegistration, String beneficiaryType, String branchNumber, String accountNumber) {
         this.ispb = ispb;
-        this.nationalRegistration = nationalRegistration;
+        this.nationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
         this.beneficiaryType = BeneficiaryType.fromString(beneficiaryType).value;
         this.branchNumber = branchNumber;
-        this.accountNumber = ensureBranchNumberSize(accountNumber);
-    }
-
-    public BankDetails(Individual owner, int ispb, int branchNumber, int accountNumber) {
-        this.ispb = ispb;
-        this.nationalRegistration = owner.getNationalRegistration();
-        this.beneficiaryType = owner.getBeneficiaryType().value;
-        this.branchNumber = String.valueOf(branchNumber);
-        this.accountNumber = ensureBranchNumberSize(String.valueOf(accountNumber));
+        this.accountNumber = CissUtils.ensureBranchNumberSize(accountNumber);
     }
 
     public int getIspb() {
@@ -67,20 +59,6 @@ public class BankDetails {
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
-    }
-
-    /**
-     * Branch numbers must be 4 digits long at least.
-     * Ex.: 0001, 0123, 1000, 1234, 123456789, 999999999.
-     */
-    private String ensureBranchNumberSize(String branchNumber) {
-
-        StringBuilder branchNumberBuilder = new StringBuilder(branchNumber);
-        while (branchNumberBuilder.length() < 4) {
-            branchNumberBuilder.insert(0, "0");
-        }
-
-        return branchNumberBuilder.toString();
     }
 
     @Override
