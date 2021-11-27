@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 public class IndividualRepositoryTest {
 
-    String fredNationalRegistration = "12345678910";
-    String fredName = "Fred Flintstone";
-    String dirtyFredNationalRegistration = "123.456.789-10";
-    String flintCoNationalRegistration = "12.345.678/0001-91";
-    String flintCoName = "Flintstones Co";
+    private final String fredNationalRegistration = "12345678910";
+    private final String fredName = "Fred Flintstone";
+    private final String dirtyFredNationalRegistration = "123.456.789-10";
+    private final String flintCoNationalRegistration = "12.345.678/0001-91";
+    private final String flintCoName = "Flintstones Co";
 
     @Autowired
-    IndividualRepository individualRepository;
+    private IndividualRepository individualRepository;
 
     @Test
     void individualRepositoryWillFindIndividualWithCleanNationalRegistration() {

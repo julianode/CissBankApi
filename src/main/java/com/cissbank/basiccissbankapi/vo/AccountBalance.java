@@ -7,14 +7,14 @@ public class AccountBalance {
 
     private int accountNumber;
     private BigDecimal amount;
-    private long requestedAtMillisUtc;
+    private long localMillisRequestedAt;
 
     public AccountBalance() {}
 
-    public AccountBalance(int accountNumber, BigDecimal amount, long requestedAtMillisUtc) {
+    public AccountBalance(int accountNumber, BigDecimal amount, long localMillisRequestedAt) {
         this.accountNumber = accountNumber;
         this.amount = amount;
-        this.requestedAtMillisUtc = requestedAtMillisUtc;
+        this.localMillisRequestedAt = localMillisRequestedAt;
     }
 
     public int getAccountNumber() {
@@ -33,12 +33,12 @@ public class AccountBalance {
         this.amount = amount;
     }
 
-    public long getRequestedAtMillisUtc() {
-        return requestedAtMillisUtc;
+    public long getLocalMillisRequestedAt() {
+        return localMillisRequestedAt;
     }
 
-    public void setRequestedAtMillisUtc(long requestedAtMillisUtc) {
-        this.requestedAtMillisUtc = requestedAtMillisUtc;
+    public void setLocalMillisRequestedAt(long localMillisRequestedAt) {
+        this.localMillisRequestedAt = localMillisRequestedAt;
     }
 
     @Override
@@ -46,12 +46,13 @@ public class AccountBalance {
         if (this == o) return true;
         if (!(o instanceof AccountBalance)) return false;
         AccountBalance that = (AccountBalance) o;
-        return accountNumber == that.accountNumber && requestedAtMillisUtc == that.requestedAtMillisUtc && Objects.equals(amount, that.amount);
+        return accountNumber == that.accountNumber && localMillisRequestedAt == that.localMillisRequestedAt
+                && Objects.equals(amount, that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber, amount, requestedAtMillisUtc);
+        return Objects.hash(accountNumber, amount, localMillisRequestedAt);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class AccountBalance {
         return "AccountBalance{" +
                 "accountNumber=" + accountNumber +
                 ", amount=" + amount +
-                ", requestedAtMillisUtc=" + requestedAtMillisUtc +
+                ", localMillisRequestedAt=" + localMillisRequestedAt +
                 '}';
     }
 }

@@ -20,10 +20,10 @@ import java.util.List;
 public class AccountCreationService {
 
     @Autowired
-    IndividualRepository individualRepository;
+    private IndividualRepository individualRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @PostMapping("/account")
     public Account createAccount(@RequestParam(value="name") String name,
@@ -114,7 +114,6 @@ public class AccountCreationService {
             return ResponseEntity.badRequest().build();
         }
     }
-
 
     @GetMapping("/account")
     public Account getAccount(@RequestParam(value="accountNumber") int accountNumber) {

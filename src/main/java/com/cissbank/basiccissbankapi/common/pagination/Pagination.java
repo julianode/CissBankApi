@@ -2,6 +2,6 @@ package com.cissbank.basiccissbankapi.common.pagination;
 
 public abstract class Pagination {
 
-    abstract int getCurrentPage();
-    abstract int getNextPage();
+    public abstract int getCurrentPage();
+    public abstract int getNextPage();
 }

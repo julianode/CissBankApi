@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 public class AccountRepositoryTest {
 
-    String fredNationalRegistration = "12345678910";
+    private final String fredNationalRegistration = "12345678910";
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Test
     void accountRepositoryWillSaveAccount() {
