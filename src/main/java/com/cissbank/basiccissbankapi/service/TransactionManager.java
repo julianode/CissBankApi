@@ -20,15 +20,18 @@ public class TransactionManager {
     }
 
     /**
-     * @return LedgerTransaction if the transfer was successful, otherwise null.
+     * Executes a transaction.
+     * Rolls back to previous state if error in any step.
+     * @return LedgerTransaction's id if the transfer was successful, otherwise zero.
      */
-    public long execute(BigDecimal amount, int fromAccountNumber, int toAccountNumber) {
+    public long executeLedgerTransaction(BigDecimal amount, int fromAccountNumber, int toAccountNumber) {
 
-        ElectronicTransfer executedTransfer = null;
+        ElectronicTransfer executedTransfer;
         AccountLedger fromAccountLedger;
         AccountLedger toAccountLedger;
         AccountLedger fromAccountLedgerPreviousState;
         AccountLedger toAccountLedgerPreviousState;
+
         try {
             fromAccountLedger = getAccountLedgerEligibleForTransfer(fromAccountNumber);
             toAccountLedger = getAccountLedgerEligibleForTransfer(toAccountNumber);
@@ -47,31 +50,40 @@ public class TransactionManager {
             return 0;
         }
 
-        try {
-            BigDecimal fromBalance = fromAccountLedger.getBalance();
-            fromAccountLedger.setBalance(fromBalance.subtract(executedTransfer.getAmount()));
-            fromAccountLedger.setLastTransactionId(executedTransfer.getId());
-            ledgerRepository.save(fromAccountLedger);
-
-        } catch (Exception exception) {
-            ledgerRepository.save(fromAccountLedgerPreviousState);
-            ledgerTransactionRepository.delete(executedTransfer);
-            return 0;
-        }
+        BigDecimal executedTransferAmount = executedTransfer.getAmount();
+        long executedTransferId = executedTransfer.getId();
 
         try {
-            BigDecimal toBalance = toAccountLedger.getBalance();
-            toAccountLedger.setBalance(toBalance.add(executedTransfer.getAmount()));
-            toAccountLedger.setLastTransactionId(executedTransfer.getId());
-            ledgerRepository.save(toAccountLedger);
+            updateFromAccountBalance(fromAccountLedger, executedTransferAmount, executedTransferId);
+            updateToAccountBalance(toAccountLedger, executedTransferAmount, executedTransferId);
 
         } catch (Exception exception) {
-            ledgerRepository.save(toAccountLedgerPreviousState);
-            ledgerRepository.save(fromAccountLedgerPreviousState);
-            ledgerTransactionRepository.delete(executedTransfer);
+            rollbackTransaction(fromAccountLedgerPreviousState, toAccountLedgerPreviousState, executedTransferId);
             return 0;
         }
-        return executedTransfer.getId();
+        return executedTransferId;
+    }
+
+    private void updateToAccountBalance(AccountLedger toAccountLedger, BigDecimal executedTransferAmount, long executedTransferId) {
+        BigDecimal toBalance = toAccountLedger.getBalance();
+        toAccountLedger.setBalance(toBalance.add(executedTransferAmount));
+        toAccountLedger.setLastTransactionId(executedTransferId);
+        ledgerRepository.save(toAccountLedger);
+    }
+
+    private void updateFromAccountBalance(AccountLedger fromAccountLedger, BigDecimal executedTransferAmount, long executedTransferId) {
+        BigDecimal fromBalance = fromAccountLedger.getBalance();
+        fromAccountLedger.setBalance(fromBalance.subtract(executedTransferAmount));
+        fromAccountLedger.setLastTransactionId(executedTransferId);
+        ledgerRepository.save(fromAccountLedger);
+    }
+
+    private void rollbackTransaction(AccountLedger fromAccountLedgerPreviousState,
+                                     AccountLedger toAccountLedgerPreviousState, long executedTransferId) {
+
+        ledgerRepository.save(toAccountLedgerPreviousState);
+        ledgerRepository.save(fromAccountLedgerPreviousState);
+        ledgerTransactionRepository.deleteById(executedTransferId);
     }
 
     /**

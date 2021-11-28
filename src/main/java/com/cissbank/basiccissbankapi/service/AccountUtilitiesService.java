@@ -50,7 +50,7 @@ public class AccountUtilitiesService {
 
         LedgerTransaction resultTransaction = null;
         TransactionManager transactionManager = new TransactionManager(ledgerTransactionRepository, ledgerRepository);
-        long transactionId = transactionManager.execute(amount, fromAccountNumber, toAccountNumber);
+        long transactionId = transactionManager.executeLedgerTransaction(amount, fromAccountNumber, toAccountNumber);
 
         boolean success = transactionId != 0;
 
