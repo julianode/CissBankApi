@@ -4,8 +4,10 @@ import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.entity.client.Account;
 import com.cissbank.basiccissbankapi.entity.client.Individual;
+import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
 import com.cissbank.basiccissbankapi.repository.AccountRepository;
 import com.cissbank.basiccissbankapi.repository.IndividualRepository;
+import com.cissbank.basiccissbankapi.repository.LedgerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,9 @@ public class AccountCreationService {
 
     @Autowired
     private AccountRepository accountRepository;
+    
+    @Autowired
+    private LedgerRepository ledgerRepository;
 
     @PostMapping("/account")
     public Account createAccount(@RequestParam(value="name") String name,
@@ -61,6 +66,10 @@ public class AccountCreationService {
                                                  @RequestParam(value="demonstrationAccount") boolean demonstrationAccount) {
 
         Account account = accountRepository.findByNumber(accountNumber);
+        if (account == null || account.getStatus() == ActivationStatus.DEPRECATED) {
+            return ResponseEntity.notFound().build();
+        }
+
         boolean depositHappened = false;
         boolean shouldHaveInitialDeposit = account.getShouldHaveInitialDeposit();
 
@@ -135,12 +144,19 @@ public class AccountCreationService {
 
         Account account = accountRepository.findByNumber(accountNumber);
 
-        if (account.getStatus() == ActivationStatus.DEPRECATED) {
+        if (account == null || account.getStatus() == ActivationStatus.DEPRECATED) {
             return ResponseEntity.notFound().build();
         }
 
         account.setStatus(ActivationStatus.DEPRECATED);
         accountRepository.save(account);
+        
+        AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
+        if (accountLedger != null) {
+            accountLedger.setStatus(ActivationStatus.DEPRECATED);
+            ledgerRepository.save(accountLedger);
+        }
+        
         String message = String.format("Account deleted. [accountNumber: %d]", accountNumber);
         return ResponseEntity.ok(message);
     }
