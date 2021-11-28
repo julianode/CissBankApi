@@ -122,7 +122,7 @@ public class AccountCreationService {
         return accountRepository.findByNumber(accountNumber);
     }
 
-    @GetMapping("/account")
+    @GetMapping("/accounts")
     public List<Account> getAccounts(@RequestParam(value="nationalRegistration") String nationalRegistration) {
         return accountRepository.findByOwnerNationalRegistration(nationalRegistration);
     }

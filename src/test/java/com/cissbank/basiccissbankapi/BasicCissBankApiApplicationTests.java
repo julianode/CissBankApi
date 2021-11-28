@@ -9,5 +9,4 @@ class BasicCissBankApiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
