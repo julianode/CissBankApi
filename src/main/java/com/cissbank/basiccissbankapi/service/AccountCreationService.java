@@ -207,8 +207,10 @@ public class AccountCreationService {
             accountLedger.setStatus(ActivationStatus.DEPRECATED);
             accountLedger = ledgerRepository.update(accountLedger);
             log.info("AccountLedger (related to Account) deleted. [accountNumber: {}] [ledgerId: {}]", accountNumber, accountLedger.getId());
+
+        } else {
+            log.error("AccountLedger (related to Account) not deleted. [accountNumber: {}] [ledgerId: {}]", accountNumber, accountLedger.getId());
         }
-        
         String message = String.format("Account deleted. [accountNumber: %d]", accountNumber);
         return ResponseEntity.ok(message);
     }

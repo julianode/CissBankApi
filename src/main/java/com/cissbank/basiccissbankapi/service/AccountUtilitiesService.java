@@ -6,7 +6,10 @@ import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
 import com.cissbank.basiccissbankapi.entity.ledger.LedgerTransaction;
 import com.cissbank.basiccissbankapi.repository.LedgerRepository;
 import com.cissbank.basiccissbankapi.repository.LedgerTransactionRepository;
+import com.cissbank.basiccissbankapi.service.component.TransactionManagerComponent;
 import com.cissbank.basiccissbankapi.vo.AccountBalance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +31,12 @@ public class AccountUtilitiesService {
     @Autowired
     private LedgerTransactionRepository ledgerTransactionRepository;
 
+    private static final Logger log = LoggerFactory.getLogger("AccountUtilitiesService");
+
     @GetMapping("/balance")
     public AccountBalance getAccountBalance(@RequestParam(value="accountNumber") int accountNumber) {
 
+        log.info("Account balance requested. [accountNumber: {}]", accountNumber);
         AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
         return new AccountBalance(accountLedger.getOwnerAccountNumber(), accountLedger.getBalance(), System.currentTimeMillis());
     }
@@ -40,6 +46,7 @@ public class AccountUtilitiesService {
                                                       @RequestParam(value="offset") int offset,
                                                       @RequestParam(value="limit") int limit) {
 
+        log.info("Account statement requested. [accountNumber: {}]", accountNumber);
         Pagination pagination = new OffsetPagination(limit, offset);
         Pageable pageable = PageRequest.of(pagination.getCurrentPage(), limit);
         return ledgerTransactionRepository.getAccountStatement(accountNumber, pageable);
@@ -50,8 +57,10 @@ public class AccountUtilitiesService {
                                    @RequestParam(value="toAccountNumber") int toAccountNumber,
                                    @RequestParam(value="amount") BigDecimal amount) {
 
-        TransactionManager transactionManager = new TransactionManager(ledgerTransactionRepository, ledgerRepository);
-        long transactionId = transactionManager.executeLedgerTransaction(amount, fromAccountNumber, toAccountNumber);
+        TransactionManagerComponent transactionManagerComponent =
+                new TransactionManagerComponent(ledgerTransactionRepository, ledgerRepository);
+
+        long transactionId = transactionManagerComponent.executeLedgerTransaction(amount, fromAccountNumber, toAccountNumber);
         boolean success = transactionId != 0;
 
         if (success) {
@@ -61,6 +70,7 @@ public class AccountUtilitiesService {
         } else {
             String messageBody = String.format("\"message\":Could not process transaction. " +
                     "[fromAccountNumber: %d] [toAccountNumber: %d] [amount: %f]", fromAccountNumber, toAccountNumber, amount);
+            log.error(messageBody);
             return ResponseEntity.internalServerError().body(messageBody);
         }
     }

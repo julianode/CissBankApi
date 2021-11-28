@@ -1,19 +1,24 @@
-package com.cissbank.basiccissbankapi.service;
+package com.cissbank.basiccissbankapi.service.component;
 
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
 import com.cissbank.basiccissbankapi.entity.ledger.ElectronicTransfer;
 import com.cissbank.basiccissbankapi.repository.LedgerRepository;
 import com.cissbank.basiccissbankapi.repository.LedgerTransactionRepository;
+import com.cissbank.basiccissbankapi.vo.TransactionAccountLedgers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
-public class TransactionManager {
+public class TransactionManagerComponent {
 
     private final LedgerTransactionRepository ledgerTransactionRepository;
     private final LedgerRepository ledgerRepository;
 
-    public TransactionManager(LedgerTransactionRepository ledgerTransactionRepository, LedgerRepository ledgerRepository) {
+    private static final Logger log = LoggerFactory.getLogger("TransactionManagerComponent");
+
+    public TransactionManagerComponent(LedgerTransactionRepository ledgerTransactionRepository, LedgerRepository ledgerRepository) {
         this.ledgerTransactionRepository = ledgerTransactionRepository;
         this.ledgerRepository = ledgerRepository;
     }
@@ -25,7 +30,37 @@ public class TransactionManager {
      */
     public long executeLedgerTransaction(BigDecimal amount, int fromAccountNumber, int toAccountNumber) {
 
-        ElectronicTransfer executedTransfer;
+        TransactionAccountLedgers accountLedgers = validateAccountLedgers(fromAccountNumber, toAccountNumber);
+        if (accountLedgers == null) {return 0;}
+
+        ElectronicTransfer executedTransfer = writeTransactionToDatabase(amount, fromAccountNumber, toAccountNumber);
+        if (executedTransfer == null) {return 0;}
+
+        return updateBalancesAndFinishTransaction(fromAccountNumber, toAccountNumber,
+                executedTransfer.getId(), executedTransfer, accountLedgers);
+    }
+
+    private ElectronicTransfer writeTransactionToDatabase(BigDecimal amount, int fromAccountNumber, int toAccountNumber) {
+
+        ElectronicTransfer executedTransfer = null;
+        ElectronicTransfer electronicTransfer = new ElectronicTransfer(amount, fromAccountNumber, toAccountNumber);
+
+        try {
+            executedTransfer = ledgerTransactionRepository.save(electronicTransfer);
+
+        } catch (Exception exception) {
+            log.error("Transaction error, nothing was written in database. [fromAccountNumber: {}] [toAccountNumber: {}]",
+                    fromAccountNumber, toAccountNumber);
+            return executedTransfer;
+        }
+        long executedTransferId = executedTransfer.getId();
+        log.info("Transaction wrote in database. [fromAccountNumber: {}] [toAccountNumber: {}] [transactionId: {}]",
+                fromAccountNumber, toAccountNumber, executedTransferId);
+        return executedTransfer;
+    }
+
+    private TransactionAccountLedgers validateAccountLedgers(int fromAccountNumber, int toAccountNumber) {
+
         AccountLedger fromAccountLedger;
         AccountLedger toAccountLedger;
         AccountLedger fromAccountLedgerPreviousState;
@@ -38,34 +73,44 @@ public class TransactionManager {
             toAccountLedgerPreviousState = fromAccountLedger.clone();
 
         } catch (Exception exception) {
-            return 0;
+            log.error("AccountLedgers eligibilities not fit for transaction. " +
+                    "[fromAccountNumber: {}] [toAccountNumber: {}]", fromAccountNumber, toAccountNumber);
+            return null;
         }
+        log.info("AccountLedgers eligibilities validated for transaction. " +
+                        "[fromAccountNumber: {}] [toAccountNumber: {}]", fromAccountNumber, toAccountNumber);
 
-        ElectronicTransfer electronicTransfer = new ElectronicTransfer(amount, fromAccountNumber, toAccountNumber);
-        try {
-            executedTransfer = ledgerTransactionRepository.save(electronicTransfer);
+        return new TransactionAccountLedgers(fromAccountLedger, toAccountLedger, fromAccountLedgerPreviousState, toAccountLedgerPreviousState);
+    }
 
-        } catch (Exception exception) {
-            return 0;
-        }
+    private long updateBalancesAndFinishTransaction(int fromAccountNumber, int toAccountNumber, long executedTransferId, ElectronicTransfer executedTransfer, TransactionAccountLedgers transactionAccountLedgers) {
 
         BigDecimal executedTransferAmount = executedTransfer.getAmount();
-        long executedTransferId = executedTransfer.getId();
 
         try {
             // TODO: decide what to do with transactions which let user with negative balance;
             // I will allow for negative account balances, since there is no deposit feature yet.
-            updateFromAccountBalance(fromAccountLedger, executedTransferAmount, executedTransferId);
-            updateToAccountBalance(toAccountLedger, executedTransferAmount, executedTransferId);
+            updateFromAccountBalance(transactionAccountLedgers.getFromAccountLedger(), executedTransferAmount, executedTransferId);
+            updateToAccountBalance(transactionAccountLedgers.getToAccountLedger(), executedTransferAmount, executedTransferId);
 
         } catch (Exception exception) {
-            rollbackTransaction(fromAccountLedgerPreviousState, toAccountLedgerPreviousState, executedTransferId);
+            rollbackTransaction(transactionAccountLedgers.getFromAccountLedgerPreviousState(),
+                    transactionAccountLedgers.getToAccountLedgerPreviousState(), executedTransferId);
+            log.error("Error while updating accounts' balances. Transaction rolled back." +
+                            " [fromAccountNumber: {}] [toAccountNumber: {}] [transactionId: {}]",
+                    fromAccountNumber, toAccountNumber, executedTransferId);
             return 0;
         }
+
+        log.info("Transaction successfully updated at accounts' balances." +
+                        " [fromAccountNumber: {}] [toAccountNumber: {}] [transactionId: {}]",
+                fromAccountNumber, toAccountNumber, executedTransferId);
+
         return executedTransferId;
     }
 
     private void updateToAccountBalance(AccountLedger toAccountLedger, BigDecimal executedTransferAmount, long executedTransferId) {
+
         BigDecimal toBalance = toAccountLedger.getBalance();
         toAccountLedger.setBalance(toBalance.add(executedTransferAmount));
         toAccountLedger.setLastTransactionId(executedTransferId);
@@ -73,6 +118,7 @@ public class TransactionManager {
     }
 
     private void updateFromAccountBalance(AccountLedger fromAccountLedger, BigDecimal executedTransferAmount, long executedTransferId) {
+
         BigDecimal fromBalance = fromAccountLedger.getBalance();
         fromAccountLedger.setBalance(fromBalance.subtract(executedTransferAmount));
         fromAccountLedger.setLastTransactionId(executedTransferId);
