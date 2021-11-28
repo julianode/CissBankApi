@@ -44,7 +44,7 @@ public class AccountCreationService {
         handleUserSituation(newUser, existingUser);
 
         Account newAccount = new Account(nationalRegistration, shouldHaveInitialDeposit);
-        accountRepository.save(newAccount);
+        accountRepository.persist(newAccount);
 
         return newAccount;
     }
@@ -54,10 +54,10 @@ public class AccountCreationService {
         if (existingUser != null) {
             if (existingUser.getStatus() != ActivationStatus.ACTIVE) {
                 existingUser.setStatus(ActivationStatus.ACTIVE);
-                individualRepository.save(existingUser);
+                individualRepository.persist(existingUser);
             }
         } else {
-            individualRepository.save(newUser);
+            individualRepository.persist(newUser);
         }
     }
 
@@ -93,7 +93,7 @@ public class AccountCreationService {
         if (!shouldHaveInitialDeposit && demonstrationAccount) {
             account.setStatus(ActivationStatus.ACTIVE);
             account.setDemonstrationAccount(true);
-            accountRepository.save(account);
+            accountRepository.persist(account);
             String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
             return ResponseEntity.ok(message);
 
@@ -104,7 +104,7 @@ public class AccountCreationService {
         } else if (shouldHaveInitialDeposit && depositHappened && demonstrationAccount) {
             account.setStatus(ActivationStatus.ACTIVE);
             account.setDemonstrationAccount(true);
-            accountRepository.save(account);
+            accountRepository.persist(account);
             String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
             return ResponseEntity.ok(message);
 
@@ -119,7 +119,7 @@ public class AccountCreationService {
 
             } else {
                 account.setStatus(ActivationStatus.ACTIVE);
-                accountRepository.save(account);
+                accountRepository.persist(account);
                 String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
                 return ResponseEntity.ok(message);
             }
@@ -149,12 +149,12 @@ public class AccountCreationService {
         }
 
         account.setStatus(ActivationStatus.DEPRECATED);
-        accountRepository.save(account);
+        accountRepository.persist(account);
         
         AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
         if (accountLedger != null) {
             accountLedger.setStatus(ActivationStatus.DEPRECATED);
-            ledgerRepository.save(accountLedger);
+            ledgerRepository.persist(accountLedger);
         }
         
         String message = String.format("Account deleted. [accountNumber: %d]", accountNumber);

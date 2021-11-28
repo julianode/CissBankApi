@@ -40,7 +40,7 @@ public class AccountUtilitiesService {
             accountLedger = new AccountLedger(accountNumber, BigDecimal.ZERO,
                     0L, ActivationStatus.ACTIVE);
 
-            ledgerRepository.save(accountLedger);
+            ledgerRepository.persist(accountLedger);
         }
         return new AccountBalance(accountLedger.getOwnerAccountNumber(), accountLedger.getBalance(), nowMillisSinceEpoch);
     }

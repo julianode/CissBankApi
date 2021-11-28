@@ -24,7 +24,7 @@ public class LedgerRepositoryTest {
         AccountLedger accountLedger = new AccountLedger(ownerAccountNumber, BigDecimal.TEN,
                 5678L, ActivationStatus.ACTIVE);
 
-        ledgerRepository.save(accountLedger);
+        ledgerRepository.persist(accountLedger);
         AccountLedger expectedAccountLedger = ledgerRepository.findByOwnerAccountNumber(ownerAccountNumber);
         assertEquals(expectedAccountLedger, accountLedger);
     }

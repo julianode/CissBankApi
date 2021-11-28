@@ -26,7 +26,7 @@ public class AccountRepositoryTest {
     void accountRepositoryWillSaveAccount() {
 
         Account account = new Account(fredNationalRegistration, false);
-        accountRepository.save(account);
+        accountRepository.persist(account);
         List<Account> expectedAccountList = accountRepository.findByOwnerNationalRegistration(fredNationalRegistration);
         assertEquals(expectedAccountList.get(0), account);
     }

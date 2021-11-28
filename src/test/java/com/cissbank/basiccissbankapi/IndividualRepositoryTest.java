@@ -22,6 +22,7 @@ public class IndividualRepositoryTest {
     private final String dirtyFredNationalRegistration = "123.456.789-10";
     private final String flintCoNationalRegistration = "12.345.678/0001-91";
     private final String flintCoName = "Flintstones Co";
+    private final String wrongName = "Fred WrongFakeSurname";
 
     @Autowired
     private IndividualRepository individualRepository;
@@ -30,7 +31,7 @@ public class IndividualRepositoryTest {
     void individualRepositoryWillFindIndividualWithCleanNationalRegistration() {
 
         Individual individual = new Individual(fredName, fredNationalRegistration);
-        individualRepository.save(individual);
+        individualRepository.persist(individual);
         Individual expectedIndividual = individualRepository.findByNationalRegistration(fredNationalRegistration);
         assertEquals(expectedIndividual, individual);
     }
@@ -39,7 +40,7 @@ public class IndividualRepositoryTest {
     void individualRepositoryWillNotFindIndividualWithDirtyNationalRegistration() {
 
         Individual individual = new Individual(fredName, dirtyFredNationalRegistration);
-        individualRepository.save(individual);
+        individualRepository.persist(individual);
         Individual expectedIndividual = individualRepository.findByNationalRegistration(dirtyFredNationalRegistration);
         assertNotEquals(expectedIndividual, individual);
         assertNull(expectedIndividual);
@@ -53,7 +54,7 @@ public class IndividualRepositoryTest {
     void individualRepositoryWillSaveMistakenLegalPersonInfo() {
 
         Individual individual = new Individual(flintCoName, flintCoNationalRegistration);
-        individualRepository.save(individual);
+        individualRepository.persist(individual);
 
         String cleanFlintCoNationalRegistration = CissUtils.ensureNationalRegistrationFormat(flintCoNationalRegistration);
         Individual expectedIndividual = individualRepository.findByNationalRegistration(cleanFlintCoNationalRegistration);
@@ -65,14 +66,30 @@ public class IndividualRepositoryTest {
     void individualRepositoryWillUpdateIndividual() {
 
         Individual individual = new Individual(fredName, fredNationalRegistration);
-        individualRepository.save(individual);
+        individualRepository.persist(individual);
         Individual expectedIndividual = individualRepository.findByNationalRegistration(fredNationalRegistration);
         assertEquals(expectedIndividual, individual);
 
-        String wrongName = "Fred WrongFakeSurname";
         individual.setName(wrongName);
-        individualRepository.save(individual);
+        individualRepository.update(individual);
         expectedIndividual = individualRepository.findByNationalRegistration(fredNationalRegistration);
         assertEquals(wrongName, expectedIndividual.getName());
+    }
+
+    @Test
+    void individualRepositoryWillNotDuplicateIndividual() {
+
+        Individual individual = new Individual(fredName, fredNationalRegistration);
+        individualRepository.persist(individual);
+        Individual expectedIndividual = individualRepository.findByNationalRegistration(fredNationalRegistration);
+        assertEquals(expectedIndividual, individual);
+
+        Individual individual2 = new Individual(wrongName, fredNationalRegistration);
+        try {
+            individualRepository.persist(individual2);
+
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            assertNotNull(dataIntegrityViolationException);
+        }
     }
 }
