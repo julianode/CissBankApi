@@ -3,7 +3,6 @@ package com.cissbank.basiccissbankapi.service;
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
 import com.cissbank.basiccissbankapi.entity.ledger.ElectronicTransfer;
-import com.cissbank.basiccissbankapi.entity.ledger.LedgerTransaction;
 import com.cissbank.basiccissbankapi.repository.LedgerRepository;
 import com.cissbank.basiccissbankapi.repository.LedgerTransactionRepository;
 

@@ -14,7 +14,9 @@ import java.util.List;
 
 /**
  * There is no "update account" service, for now.
- * One must create another account and delete old ones as necessary.
+ * This is because, mainly only demonstration accounts work which just have 3 parameters to fill in.
+ * Therefore, there is no sense in updating them.
+ * One may create another account and delete old ones at will.
  */
 @RestController
 public class AccountCreationService {
