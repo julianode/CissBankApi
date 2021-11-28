@@ -10,14 +10,14 @@ import java.util.Set;
 
 public interface LedgerTransactionRepository extends PagingAndSortingRepository<LedgerTransaction, Long> {
 
-    List<LedgerTransaction> findByFromAccountId(int fromAccountId, Pageable pageable);
-    List<LedgerTransaction> findByToAccountId(int toAccountId, Pageable pageable);
+    List<LedgerTransaction> findByFromAccountNumber(int fromAccountNumber, Pageable pageable);
+    List<LedgerTransaction> findByToAccountNumber(int toAccountNumber, Pageable pageable);
 
     default Set<LedgerTransaction> getAccountStatement(int accountNumber, Pageable pageable) {
 
         Set<LedgerTransaction> transactionSet = new HashSet<>();
-        List<LedgerTransaction> fromList = findByFromAccountId(accountNumber, pageable);
-        List<LedgerTransaction> toList = findByToAccountId(accountNumber, pageable);
+        List<LedgerTransaction> fromList = findByFromAccountNumber(accountNumber, pageable);
+        List<LedgerTransaction> toList = findByToAccountNumber(accountNumber, pageable);
 
         transactionSet.addAll(fromList);
         transactionSet.addAll(toList);

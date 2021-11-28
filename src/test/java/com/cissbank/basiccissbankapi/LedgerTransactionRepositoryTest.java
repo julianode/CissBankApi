@@ -31,7 +31,7 @@ public class LedgerTransactionRepositoryTest {
 
         Deposit deposit = new Deposit(BigDecimal.TEN, toAccount);
         ledgerTransactionRepository.save(deposit);
-        List<LedgerTransaction> transactionList = ledgerTransactionRepository.findByToAccountId(toAccount, pageable);
+        List<LedgerTransaction> transactionList = ledgerTransactionRepository.findByToAccountNumber(toAccount, pageable);
         Deposit expectedDeposit = (Deposit) transactionList.get(0);
         assertEquals(expectedDeposit, deposit);
     }
@@ -41,7 +41,7 @@ public class LedgerTransactionRepositoryTest {
 
         Withdrawal withdrawal = new Withdrawal(BigDecimal.TEN, fromAccount);
         ledgerTransactionRepository.save(withdrawal);
-        List<LedgerTransaction> transactionList  = ledgerTransactionRepository.findByFromAccountId(fromAccount, pageable);
+        List<LedgerTransaction> transactionList  = ledgerTransactionRepository.findByFromAccountNumber(fromAccount, pageable);
         Withdrawal expectedWithdrawal = (Withdrawal) transactionList.get(0);
         assertEquals(expectedWithdrawal, withdrawal);
     }
@@ -51,7 +51,7 @@ public class LedgerTransactionRepositoryTest {
 
         ElectronicTransfer electronicTransfer = new ElectronicTransfer(BigDecimal.TEN, fromAccount, toAccount);
         ledgerTransactionRepository.save(electronicTransfer);
-        List<LedgerTransaction> transactionList = ledgerTransactionRepository.findByFromAccountId(fromAccount, pageable);
+        List<LedgerTransaction> transactionList = ledgerTransactionRepository.findByFromAccountNumber(fromAccount, pageable);
         ElectronicTransfer expectedElectronicTransfer = (ElectronicTransfer) transactionList.get(0);
         assertEquals(expectedElectronicTransfer, electronicTransfer);
     }
