@@ -27,11 +27,10 @@ public class AccountLedger {
     public AccountLedger() {}
 
     public AccountLedger(int ownerAccountNumber, BigDecimal balance,
-                         long lastTransactionId, ActivationStatus status) {
+                         long lastTransactionId) {
         this.ownerAccountNumber = ownerAccountNumber;
         this.balance = balance;
         this.lastTransactionId = lastTransactionId;
-        this.status = status;
     }
 
     public int getId() {
@@ -74,8 +73,11 @@ public class AccountLedger {
         this.status = status;
     }
 
-    public AccountLedger clone() throws CloneNotSupportedException {
-        return (AccountLedger) super.clone();
+    @Override
+    public AccountLedger clone() {
+        AccountLedger accountLedger = new AccountLedger(this.ownerAccountNumber, this.balance, this.lastTransactionId);
+        accountLedger.setId(this.id);
+        return accountLedger;
     }
 
     @Override

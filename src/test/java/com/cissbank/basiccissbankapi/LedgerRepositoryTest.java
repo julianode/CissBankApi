@@ -1,6 +1,5 @@
 package com.cissbank.basiccissbankapi;
 
-import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
 import com.cissbank.basiccissbankapi.repository.LedgerRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ public class LedgerRepositoryTest {
 
         final int ownerAccountNumber = 1234;
         AccountLedger accountLedger = new AccountLedger(ownerAccountNumber, BigDecimal.TEN,
-                5678L, ActivationStatus.ACTIVE);
+                5678L);
 
         ledgerRepository.persist(accountLedger);
         AccountLedger expectedAccountLedger = ledgerRepository.findByOwnerAccountNumber(ownerAccountNumber);

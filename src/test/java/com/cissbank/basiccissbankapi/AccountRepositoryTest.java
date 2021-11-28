@@ -59,8 +59,4 @@ public class AccountRepositoryTest {
         account1 = accountRepository.persist(account1);
         assertEquals(number + 1, account1.getNumber());
     }
-
-
-    // TODO: test number generation
-    // TODO: test initialDepositDate saving
 }

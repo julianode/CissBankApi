@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -45,6 +46,10 @@ public class AccountCreationService {
 
         Account newAccount = new Account(accountRepository.generateAccountNumber(), nationalRegistration, shouldHaveInitialDeposit);
         accountRepository.persist(newAccount);
+
+        AccountLedger accountLedger = new AccountLedger(newAccount.getNumber(),
+                BigDecimal.ZERO,0L);
+        ledgerRepository.persist(accountLedger);
 
         return newAccount;
     }
@@ -91,22 +96,14 @@ public class AccountCreationService {
                                                                         boolean demonstrationAccount, int accountNumber,
                                                                         boolean depositHappened) {
         if (!shouldHaveInitialDeposit && demonstrationAccount) {
-            account.setStatus(ActivationStatus.ACTIVE);
-            account.setDemonstrationAccount(true);
-            accountRepository.update(account);
-            String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
-            return ResponseEntity.ok(message);
+            return approveDemonstrationAccount(account, accountNumber);
 
         } else if (shouldHaveInitialDeposit && !depositHappened) {
             String message = String.format("Deposit condition not met. [accountNumber: %d]", accountNumber);
             throw new IllegalStateException(message);
 
         } else if (shouldHaveInitialDeposit && depositHappened && demonstrationAccount) {
-            account.setStatus(ActivationStatus.ACTIVE);
-            account.setDemonstrationAccount(true);
-            accountRepository.update(account);
-            String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
-            return ResponseEntity.ok(message);
+            return approveDemonstrationAccount(account, accountNumber);
 
         } else if (!shouldHaveInitialDeposit && !demonstrationAccount) {
             String ownerNationalRegistration = account.getOwnerNationalRegistration();
@@ -118,14 +115,38 @@ public class AccountCreationService {
                 throw new IllegalStateException(descriptionMessage);
 
             } else {
-                account.setStatus(ActivationStatus.ACTIVE);
-                accountRepository.update(account);
-                String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
-                return ResponseEntity.ok(message);
+                return approveRegularAccount(account, accountNumber);
             }
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    private ResponseEntity<String> approveRegularAccount(Account account, int accountNumber) {
+
+        account.setStatus(ActivationStatus.ACTIVE);
+        accountRepository.update(account);
+
+        AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
+        accountLedger.setStatus(ActivationStatus.ACTIVE);
+        ledgerRepository.update(accountLedger);
+
+        String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
+        return ResponseEntity.ok(message);
+    }
+
+    private ResponseEntity<String> approveDemonstrationAccount(Account account, int accountNumber) {
+
+        account.setStatus(ActivationStatus.ACTIVE);
+        account.setDemonstrationAccount(true);
+        accountRepository.update(account);
+
+        AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
+        accountLedger.setStatus(ActivationStatus.ACTIVE);
+        ledgerRepository.update(accountLedger);
+
+        String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping("/account")

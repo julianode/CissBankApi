@@ -1,6 +1,5 @@
 package com.cissbank.basiccissbankapi.service;
 
-import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.common.pagination.OffsetPagination;
 import com.cissbank.basiccissbankapi.common.pagination.Pagination;
 import com.cissbank.basiccissbankapi.entity.ledger.AccountLedger;
@@ -33,22 +32,14 @@ public class AccountUtilitiesService {
     public AccountBalance getAccountBalance(@RequestParam(value="accountNumber") int accountNumber) {
 
         AccountLedger accountLedger = ledgerRepository.findByOwnerAccountNumber(accountNumber);
-        long nowMillisSinceEpoch = System.currentTimeMillis();
-
-        if (accountLedger == null) {
-
-            accountLedger = new AccountLedger(accountNumber, BigDecimal.ZERO,
-                    0L, ActivationStatus.ACTIVE);
-
-            ledgerRepository.persist(accountLedger);
-        }
-        return new AccountBalance(accountLedger.getOwnerAccountNumber(), accountLedger.getBalance(), nowMillisSinceEpoch);
+        return new AccountBalance(accountLedger.getOwnerAccountNumber(), accountLedger.getBalance(), System.currentTimeMillis());
     }
 
     @GetMapping("/statement")
     public Set<LedgerTransaction> getAccountStatement(@RequestParam(value="accountNumber") int accountNumber,
                                                       @RequestParam(value="offset") int offset,
                                                       @RequestParam(value="limit") int limit) {
+
         Pagination pagination = new OffsetPagination(limit, offset);
         Pageable pageable = PageRequest.of(pagination.getCurrentPage(), limit);
         return ledgerTransactionRepository.getAccountStatement(accountNumber, pageable);

@@ -37,7 +37,7 @@ public class TransactionManager {
             fromAccountLedgerPreviousState = fromAccountLedger.clone();
             toAccountLedgerPreviousState = fromAccountLedger.clone();
 
-        } catch (IllegalStateException | CloneNotSupportedException exception) {
+        } catch (Exception exception) {
             return 0;
         }
 
@@ -53,6 +53,8 @@ public class TransactionManager {
         long executedTransferId = executedTransfer.getId();
 
         try {
+            // TODO: decide what to do with transactions which let user with negative balance;
+            // I will allow for negative account balances, since there is no deposit feature yet.
             updateFromAccountBalance(fromAccountLedger, executedTransferAmount, executedTransferId);
             updateToAccountBalance(toAccountLedger, executedTransferAmount, executedTransferId);
 
