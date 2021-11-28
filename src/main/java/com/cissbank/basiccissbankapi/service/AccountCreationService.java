@@ -83,6 +83,7 @@ public class AccountCreationService {
                                                                         boolean depositHappened) {
         if (!shouldHaveInitialDeposit && demonstrationAccount) {
             account.setStatus(ActivationStatus.ACTIVE);
+            account.setDemonstrationAccount(true);
             accountRepository.save(account);
             String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
             return ResponseEntity.ok(message);
@@ -93,6 +94,7 @@ public class AccountCreationService {
 
         } else if (shouldHaveInitialDeposit && depositHappened && demonstrationAccount) {
             account.setStatus(ActivationStatus.ACTIVE);
+            account.setDemonstrationAccount(true);
             accountRepository.save(account);
             String message = String.format("Account approved/active. [accountNumber: %d]", accountNumber);
             return ResponseEntity.ok(message);
