@@ -126,14 +126,22 @@ public class AccountCreationService {
 
     @GetMapping("/accounts")
     public List<Account> getAccounts(@RequestParam(value="nationalRegistration") String nationalRegistration) {
-        return accountRepository.findByOwnerNationalRegistration(nationalRegistration);
+        String cleanNationalRegistration = CissUtils.ensureNationalRegistrationFormat(nationalRegistration);
+        return accountRepository.findByOwnerNationalRegistration(cleanNationalRegistration);
     }
 
     @DeleteMapping("/account")
-    public void deleteAccount(@RequestParam(value="accountNumber") int accountNumber) {
+    public ResponseEntity<String> deleteAccount(@RequestParam(value="accountNumber") int accountNumber) {
 
         Account account = accountRepository.findByNumber(accountNumber);
+
+        if (account.getStatus() == ActivationStatus.DEPRECATED) {
+            return ResponseEntity.notFound().build();
+        }
+
         account.setStatus(ActivationStatus.DEPRECATED);
         accountRepository.save(account);
+        String message = String.format("Account deleted. [accountNumber: %d]", accountNumber);
+        return ResponseEntity.ok(message);
     }
 }
