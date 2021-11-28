@@ -72,7 +72,7 @@ public class Account {
         this.status = status;
     }
 
-    public boolean shouldHaveInitialDeposit() {
+    public boolean getShouldHaveInitialDeposit() {
         return shouldHaveInitialDeposit;
     }
 

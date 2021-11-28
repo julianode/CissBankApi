@@ -62,7 +62,7 @@ public class AccountCreationService {
 
         Account account = accountRepository.findByNumber(accountNumber);
         boolean depositHappened = false;
-        boolean shouldHaveInitialDeposit = account.shouldHaveInitialDeposit();
+        boolean shouldHaveInitialDeposit = account.getShouldHaveInitialDeposit();
 
         if (account.getStatus() == ActivationStatus.ACTIVE) {
             String message = String.format("Account already approved/active. [accountNumber: %d]", accountNumber);
