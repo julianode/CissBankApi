@@ -1,11 +1,9 @@
 package com.cissbank.basiccissbankapi.entity.ledger;
 
 import com.cissbank.basiccissbankapi.common.enumeration.TransferType;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -22,7 +20,11 @@ public class LedgerTransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected long id;
     protected BigDecimal amount;
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
     protected Timestamp createdAt;
+
     protected int fromAccountNumber;
     protected int toAccountNumber;
     protected TransferType transferType;

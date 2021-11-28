@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class LedgerRepositoryTest {
@@ -23,7 +22,7 @@ public class LedgerRepositoryTest {
 
         final int ownerAccountNumber = 1234;
         AccountLedger accountLedger = new AccountLedger(ownerAccountNumber, BigDecimal.TEN,
-                new Timestamp(System.currentTimeMillis()), 5678L, ActivationStatus.ACTIVE);
+                5678L, ActivationStatus.ACTIVE);
 
         ledgerRepository.save(accountLedger);
         AccountLedger expectedAccountLedger = ledgerRepository.findByOwnerAccountNumber(ownerAccountNumber);

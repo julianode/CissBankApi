@@ -2,12 +2,8 @@ package com.cissbank.basiccissbankapi.entity.ledger;
 
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
@@ -20,19 +16,20 @@ public class AccountLedger {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true)
     private int ownerAccountNumber;
+
     private BigDecimal balance;
-    private Timestamp lastUpdatedAt;
     private long lastTransactionId;
     private ActivationStatus status;
 
     public AccountLedger() {}
 
-    public AccountLedger(int ownerAccountNumber, BigDecimal balance, Timestamp lastUpdatedAt,
+    public AccountLedger(int ownerAccountNumber, BigDecimal balance,
                          long lastTransactionId, ActivationStatus status) {
         this.ownerAccountNumber = ownerAccountNumber;
         this.balance = balance;
-        this.lastUpdatedAt = lastUpdatedAt;
         this.lastTransactionId = lastTransactionId;
         this.status = status;
     }
@@ -61,14 +58,6 @@ public class AccountLedger {
         this.balance = balance;
     }
 
-    public Timestamp getLastUpdatedAt() {
-        return lastUpdatedAt;
-    }
-
-    public void setLastUpdatedAt(Timestamp lastUpdatedAt) {
-        this.lastUpdatedAt = lastUpdatedAt;
-    }
-
     public long getLastTransactionId() {
         return lastTransactionId;
     }
@@ -95,13 +84,12 @@ public class AccountLedger {
         if (!(o instanceof AccountLedger)) return false;
         AccountLedger that = (AccountLedger) o;
         return id == that.id && ownerAccountNumber == that.ownerAccountNumber && lastTransactionId == that.lastTransactionId
-                && Objects.equals(balance, that.balance) && Objects.equals(lastUpdatedAt, that.lastUpdatedAt)
-                && status == that.status;
+                && Objects.equals(balance, that.balance) && status == that.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ownerAccountNumber, balance, lastUpdatedAt, lastTransactionId, status);
+        return Objects.hash(id, ownerAccountNumber, balance, lastTransactionId, status);
     }
 
     @Override
@@ -110,7 +98,6 @@ public class AccountLedger {
                 "id=" + id +
                 ", ownerAccountNumber=" + ownerAccountNumber +
                 ", balance=" + balance +
-                ", lastUpdatedAt=" + lastUpdatedAt +
                 ", lastTransactionId=" + lastTransactionId +
                 ", status=" + status +
                 '}';

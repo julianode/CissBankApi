@@ -5,7 +5,6 @@ import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
 import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.vo.BankDetails;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -21,14 +20,18 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true, updatable = false, columnDefinition = "INTEGER NOT NULL AUTO_INCREMENT")
     private int number;
+
     private String ownerNationalRegistration;
-    public static final int ISPB = 9999; // fake bank identification number, only for demonstration purposes.
-    public static final int BRANCH_NUMBER = 1; // this fintech has only one branch
     private ActivationStatus status;
     private boolean shouldHaveInitialDeposit;
     private Timestamp initialDepositDate;
     private boolean demonstrationAccount;
+
+    public static final int ISPB = 9999; // fake bank identification number, only for demonstration purposes.
+    public static final int BRANCH_NUMBER = 1; // this fintech has only one branch
 
     public Account() {}
 

@@ -4,9 +4,13 @@ import com.cissbank.basiccissbankapi.common.enumeration.BeneficiaryType;
 import com.cissbank.basiccissbankapi.common.util.CissUtils;
 import com.cissbank.basiccissbankapi.entity.client.Individual;
 import com.cissbank.basiccissbankapi.repository.IndividualRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,7 +62,7 @@ public class IndividualRepositoryTest {
     }
 
     @Test
-    void individualRepositoryWillFindUpdateIndividual() {
+    void individualRepositoryWillUpdateIndividual() {
 
         Individual individual = new Individual(fredName, fredNationalRegistration);
         individualRepository.save(individual);

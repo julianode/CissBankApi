@@ -5,10 +5,7 @@ import com.cissbank.basiccissbankapi.common.enumeration.Gender;
 import com.cissbank.basiccissbankapi.common.enumeration.ActivationStatus;
 import com.cissbank.basiccissbankapi.common.util.CissUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -27,7 +24,10 @@ public class Individual {
     private int id;
     private String name;
     private Timestamp dateOfBirth;
+
+    @Column(unique = true)
     private String nationalRegistration; // CPF, or CNPJ (Brazilian documents)
+
     private BeneficiaryType beneficiaryType;
     private String motherName;
     private String countyOfBirth;

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Set;
 
 @RestController
@@ -39,7 +38,7 @@ public class AccountUtilitiesService {
         if (accountLedger == null) {
 
             accountLedger = new AccountLedger(accountNumber, BigDecimal.ZERO,
-                    new Timestamp(nowMillisSinceEpoch),0L, ActivationStatus.ACTIVE);
+                    0L, ActivationStatus.ACTIVE);
 
             ledgerRepository.save(accountLedger);
         }
