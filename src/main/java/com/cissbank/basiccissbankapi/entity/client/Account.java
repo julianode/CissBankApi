@@ -35,7 +35,8 @@ public class Account {
 
     public Account() {}
 
-    public Account(String ownerNationalRegistration, boolean shouldHaveInitialDeposit) {
+    public Account(int newlyGeneratedAccountNumber, String ownerNationalRegistration, boolean shouldHaveInitialDeposit) {
+        this.number = newlyGeneratedAccountNumber;
         this.ownerNationalRegistration = CissUtils.ensureNationalRegistrationFormat(ownerNationalRegistration);
         this.status = ActivationStatus.INACTIVE;
         this.shouldHaveInitialDeposit = shouldHaveInitialDeposit;

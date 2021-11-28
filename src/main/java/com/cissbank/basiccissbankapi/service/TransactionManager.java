@@ -67,21 +67,21 @@ public class TransactionManager {
         BigDecimal toBalance = toAccountLedger.getBalance();
         toAccountLedger.setBalance(toBalance.add(executedTransferAmount));
         toAccountLedger.setLastTransactionId(executedTransferId);
-        ledgerRepository.persist(toAccountLedger);
+        ledgerRepository.update(toAccountLedger);
     }
 
     private void updateFromAccountBalance(AccountLedger fromAccountLedger, BigDecimal executedTransferAmount, long executedTransferId) {
         BigDecimal fromBalance = fromAccountLedger.getBalance();
         fromAccountLedger.setBalance(fromBalance.subtract(executedTransferAmount));
         fromAccountLedger.setLastTransactionId(executedTransferId);
-        ledgerRepository.persist(fromAccountLedger);
+        ledgerRepository.update(fromAccountLedger);
     }
 
     private void rollbackTransaction(AccountLedger fromAccountLedgerPreviousState,
                                      AccountLedger toAccountLedgerPreviousState, long executedTransferId) {
 
-        ledgerRepository.persist(toAccountLedgerPreviousState);
-        ledgerRepository.persist(fromAccountLedgerPreviousState);
+        ledgerRepository.update(toAccountLedgerPreviousState);
+        ledgerRepository.update(fromAccountLedgerPreviousState);
         ledgerTransactionRepository.deleteById(executedTransferId);
     }
 
