@@ -81,9 +81,9 @@ class BasicCissBankApiApplicationTests {
 		LedgerTransaction account1Transaction = (account1Statement.toArray(new LedgerTransaction[0]))[0];
 		assertTrue(new BigDecimal("-10").compareTo(account1Transaction.getAmount()) == 0);
 
+		accountCreationService.deleteAccount(account1Number);
 		Account account4 = accountCreationService.getAccount(account1Number);
 		ActivationStatus account4Status = account4.getStatus();
-		accountCreationService.deleteAccount(account1Number);
 		assertEquals(ActivationStatus.DEPRECATED, account4Status);
 
 		accountCreationService.deleteAccount(account1Number);
