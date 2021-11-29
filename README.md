@@ -5,7 +5,7 @@ I uploaded the "build" folder on purpose in order to help with visualizing the A
 
 ### How to run this application without building it
 Inside this project root folder (basiccissbankapi), open your terminal, and run:
-* java -jar build/libs/gs-rest-service-0.1.0.jar
+* java -jar build/libs/basiccissbankapi-0.0.1-SNAPSHOT.jar
 
 ### How to run this application building it
 Inside this project root folder (basiccissbankapi), open your terminal, and run:
