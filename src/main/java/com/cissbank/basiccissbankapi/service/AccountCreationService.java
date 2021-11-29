@@ -117,7 +117,7 @@ public class AccountCreationService {
         }
 
         if (!shouldHaveInitialDeposit && demonstrationAccount) {
-            return approveDemonstrationAccount(account, accountNumber);
+            return approveDemonstrationAccount(account);
 
         } else if (shouldHaveInitialDeposit && !depositHappened) {
             String message = String.format("Deposit condition not met. [accountNumber: %d]", accountNumber);
@@ -125,7 +125,7 @@ public class AccountCreationService {
             throw new IllegalStateException(message);
 
         } else if (shouldHaveInitialDeposit && depositHappened && demonstrationAccount) {
-            return approveDemonstrationAccount(account, accountNumber);
+            return approveDemonstrationAccount(account);
 
         } else if (!shouldHaveInitialDeposit && !demonstrationAccount) {
             String ownerNationalRegistration = account.getOwnerNationalRegistration();
@@ -138,14 +138,19 @@ public class AccountCreationService {
                 throw new IllegalStateException(descriptionMessage);
 
             } else {
-                return approveRegularAccount(account, accountNumber);
+                return approveRegularAccount(account, individual);
             }
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    private ResponseEntity<String> approveRegularAccount(Account account, int accountNumber) {
+    private ResponseEntity<String> approveRegularAccount(Account account, Individual individual) {
+
+        int accountNumber = account.getNumber();
+
+        individual.setStatus(ActivationStatus.ACTIVE);
+        individualRepository.update(individual);
 
         account.setStatus(ActivationStatus.ACTIVE);
         accountRepository.update(account);
@@ -159,7 +164,13 @@ public class AccountCreationService {
         return ResponseEntity.ok(message);
     }
 
-    private ResponseEntity<String> approveDemonstrationAccount(Account account, int accountNumber) {
+    private ResponseEntity<String> approveDemonstrationAccount(Account account) {
+
+        int accountNumber = account.getNumber();
+
+        Individual individual = individualRepository.findByNationalRegistration(account.getOwnerNationalRegistration());
+        individual.setStatus(ActivationStatus.ACTIVE);
+        individualRepository.update(individual);
 
         account.setStatus(ActivationStatus.ACTIVE);
         account.setDemonstrationAccount(true);

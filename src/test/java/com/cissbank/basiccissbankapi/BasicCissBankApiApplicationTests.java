@@ -48,16 +48,17 @@ class BasicCissBankApiApplicationTests {
 		Account account1 = accountCreationService.createAccount(fredName, fredNationalRegistration, false);
 		assertEquals(ActivationStatus.INACTIVE, account1.getStatus());
 
+		int account1Number = account1.getNumber();
+		accountCreationService.approveAccount(account1Number, true);
+
 		Account account2 = accountCreationService.createAccount(fredName, fredNationalRegistration, false);
 		assertEquals(ActivationStatus.INACTIVE, account2.getStatus());
 
+		int account2Number = account2.getNumber();
+		accountCreationService.approveAccount(account2Number, true);
+
 		// 2 accounts, one individual
 		assertEquals(account1.getOwnerNationalRegistration(), account2.getOwnerNationalRegistration());
-
-		int account1Number = account1.getNumber();
-		int account2Number = account2.getNumber();
-		accountCreationService.approveAccount(account1Number, true);
-		accountCreationService.approveAccount(account2Number, true);
 
 		Account account3 = accountCreationService.getAccount(account1Number);
 		account1.setStatus(ActivationStatus.ACTIVE);
@@ -80,7 +81,12 @@ class BasicCissBankApiApplicationTests {
 		LedgerTransaction account1Transaction = (account1Statement.toArray(new LedgerTransaction[0]))[0];
 		assertTrue(new BigDecimal("-10").compareTo(account1Transaction.getAmount()) == 0);
 
+		Account account4 = accountCreationService.getAccount(account1Number);
+		ActivationStatus account4Status = account4.getStatus();
 		accountCreationService.deleteAccount(account1Number);
-		assertEquals(ActivationStatus.DEPRECATED, accountCreationService.getAccount(account1Number).getStatus());
+		assertEquals(ActivationStatus.DEPRECATED, account4Status);
+
+		accountCreationService.deleteAccount(account1Number);
+		assertEquals(ActivationStatus.DEPRECATED, account4Status);
 	}
 }
