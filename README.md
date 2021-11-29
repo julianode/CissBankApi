@@ -35,7 +35,7 @@ When using Postman, always start with the "healthCheck" call, because it authent
 
 ### JAVADOCS
 You may find the javadocs of this application at:
-* build/docs/index.html
+* build/docs/javadoc/index.html
 
 Just use your browser to navigate.
 
