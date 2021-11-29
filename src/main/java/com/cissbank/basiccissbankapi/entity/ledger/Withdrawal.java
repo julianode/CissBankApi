@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 @Entity
 public class Withdrawal extends LedgerTransaction {
 
+    public Withdrawal() {
+    }
+
     public Withdrawal(BigDecimal amount, int fromAccountNumber) {
         super(amount, fromAccountNumber, 0);
         this.transferType = TransferType.WITHDRAWAL;

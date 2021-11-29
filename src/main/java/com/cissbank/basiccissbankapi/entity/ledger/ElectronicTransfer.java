@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 @Entity
 public class ElectronicTransfer extends LedgerTransaction {
 
+    public ElectronicTransfer() {
+    }
+
     public ElectronicTransfer(BigDecimal amount, int fromAccountNumber, int toAccountNumber) {
         super(amount, fromAccountNumber, toAccountNumber);
         this.transferType = TransferType.TED;

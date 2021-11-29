@@ -17,7 +17,6 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
 
     Account findTopByOrderByIdDesc();
 
-    // TODO: make this work.
     Account findByNumber(int number);
 
     /**

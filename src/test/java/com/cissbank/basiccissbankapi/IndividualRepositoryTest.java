@@ -12,6 +12,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * All other repositories work just like this one.
+ * Therefore, not many repeated tests were done for the other classes.
+ */
 @DataJpaTest
 public class IndividualRepositoryTest {
 
