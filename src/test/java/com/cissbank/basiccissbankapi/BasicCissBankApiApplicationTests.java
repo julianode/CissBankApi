@@ -87,6 +87,8 @@ class BasicCissBankApiApplicationTests {
 		assertEquals(ActivationStatus.DEPRECATED, account4Status);
 
 		accountCreationService.deleteAccount(account1Number);
-		assertEquals(ActivationStatus.DEPRECATED, account4Status);
+		Account account5 = accountCreationService.getAccount(account1Number);
+		ActivationStatus account5Status = account5.getStatus();
+		assertEquals(ActivationStatus.DEPRECATED, account5Status);
 	}
 }
