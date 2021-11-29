@@ -1,0 +1,12 @@
+com.cissbank.basiccissbankapi
+com.cissbank.basiccissbankapi.auth
+com.cissbank.basiccissbankapi.common.enumeration
+com.cissbank.basiccissbankapi.common.pagination
+com.cissbank.basiccissbankapi.common.util
+com.cissbank.basiccissbankapi.entity.client
+com.cissbank.basiccissbankapi.entity.ledger
+com.cissbank.basiccissbankapi.entity.miscellany
+com.cissbank.basiccissbankapi.repository
+com.cissbank.basiccissbankapi.service
+com.cissbank.basiccissbankapi.service.component
+com.cissbank.basiccissbankapi.vo
