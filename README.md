@@ -1,5 +1,5 @@
 # Ciss Bank Basic REST Application
-This is a test for a job interview.
+This is a test for a job interview. 1 week deadline, made almost everything on the weekend.
 
 I uploaded the "build" folder on purpose in order to help with visualizing the API documentation and running the API easily. 
 
